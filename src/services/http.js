@@ -38,7 +38,7 @@ export async function getProviders() {
 export async function addProvider(provider) {
   const response = await fetch(URL_BASE,{
     method: "POST",
-    headers: "defaultHeaders",
+    headers: defaultHeaders,
     body: JSON.stringify(provider),
   })
 
@@ -49,7 +49,7 @@ export async function addProvider(provider) {
 export async function updateProvider(provider) {
   const response = await fetch(`${URL_BASE}/${provider.id}`,{
     method: "PUT",
-    headers: "defaultHeaders",
+    headers: defaultHeaders,
     body: JSON.stringify(provider),
   })
 
@@ -58,14 +58,23 @@ export async function updateProvider(provider) {
 
 
 
-export async function getProviderById(provider) {
-  const response = await fetch(`${URL_BASE}/${provider.id}`,{
-    method: "GET",
-    headers: "defaultHeaders",
-    body: JSON.stringify(provider),
-  })
+// export async function getProviderById(provider) {
+//   const response = await fetch(`${URL_BASE}/${provider.id}`,{
+//     method: "GET",
+//     headers: "defaultHeaders",
+//     body: JSON.stringify(provider),
+//   })
 
-  return handleResponse(response);
+//   return handleResponse(response);
+// }
+
+export async function getProviderById(id) {
+  const response = await fetch(`${URL_BASE}/${id}`, {
+    method: "GET",
+    headers: defaultHeaders,
+  });
+
+  return handleResponse(response); // This should return JSON or throw
 }
 
 
@@ -73,7 +82,7 @@ export async function getProviderById(provider) {
 export async function deleteProvider(provider) {
   const response = await fetch(`${URL_BASE}/${provider.id}`,{
     method: "DELETE",
-    headers: "defaultHeaders",
+    headers: defaultHeaders,
   })
 
   return handleResponse(response);

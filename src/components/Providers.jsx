@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { getProviders } from '../services/http'
+import { Link } from 'react-router-dom';
 
 const Providers = () => {
 
@@ -9,11 +10,15 @@ const Providers = () => {
     getProviders().then((data) => setProviders(data))
   }, []);
 
-  console.log(providers);
 
   return (
     <>
       <div className='w-[85%] p-6 m-1 '>
+
+        <Link to={'/dashboard/providers/add'}>
+          <button className="cursor-pointer bg-primary-100 text-bg-200 text-sm px-3 py-1 rounded-md mb-4">Add New Provider</button>
+        </Link>
+
         <table className="w-full table-auto border-collapse overflow-hidden rounded-xl shadow-md bg-bg-200 text-gray-100">
           <thead className="bg-bg-300 text-left text-sm tracking-wider text-gray-300">
             <tr>
@@ -40,8 +45,12 @@ const Providers = () => {
                 <td className="px-4 py-3">$ {provider.annualBillingUSD}</td>
                 <td className="px-4 py-3">{provider.lastEdited}</td>
                 <td className="px-4 py-3 space-x-2">
-                  <button className="cursor-pointer bg-primary-300 text-text-100 text-sm px-3 py-1 rounded-md">Details</button>
-                  <button className="cursor-pointer bg-primary-200 text-bg-200 text-sm px-3 py-1 rounded-md">Edit</button>
+                  <Link to={`/dashboard/providers/${provider.id}`}>
+                    <button className="cursor-pointer bg-primary-300 text-text-100 text-sm px-3 py-1 rounded-md">Details</button>
+                  </Link>
+                  <Link to={`/dashboard/providers/${provider.id}/edit`}>
+                    <button className="cursor-pointer bg-primary-200 text-bg-200 text-sm px-3 py-1 rounded-md">Edit</button>
+                  </Link>
                   <button className="cursor-pointer bg-primary-100 text-bg-200 text-sm px-3 py-1 rounded-md">Delete</button>
                   <button className="cursor-pointer bg-accent-100 text-bg-200 text-sm px-3 py-1 rounded-md">Screenning</button>
                 </td>

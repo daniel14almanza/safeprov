@@ -10,7 +10,9 @@ const Sidebar = () => {
         </div>
         <p className="mb-6">Daniel Almanza</p>
         <a href="#" className="block mb-2">Dashboard</a>
-        <a href="#" className="block mb-2">Providers</a>
+        <Link to={"/dashboard"}>
+          <p className="block mb-2">Providers</p>
+        </Link>
         <Link to={"/"}>
           <button className="cursor-pointer mt-4 w-[80%] bg-bg-200 text-text-100 px-2 py-1 rounded">
             Log out
