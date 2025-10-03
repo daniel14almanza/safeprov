@@ -3,6 +3,7 @@ import { addProvider } from '../services/http';
 import { Link } from 'react-router-dom';
 
 const ProviderAdd = () => {
+
   const [formData, setFormData] = useState({
     legalName: '',
     tradeName: '',
@@ -15,12 +16,8 @@ const ProviderAdd = () => {
     annualBillingUSD: 0,
   });
 
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState('');
-
   const handleChange = (e) => {
     const { name, value } = e.target;
-
     setFormData((prev) => ({
       ...prev,
       [name]: name === 'annualBillingUSD' ? Number(value) : value,
@@ -29,12 +26,9 @@ const ProviderAdd = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setSuccess(false);
-
     try {
       await addProvider(formData);
-      setSuccess(true);
+      alert('Provider created successfully!');
       setFormData({
         legalName: '',
         tradeName: '',
@@ -47,30 +41,19 @@ const ProviderAdd = () => {
         annualBillingUSD: 0,
       });
     } catch (err) {
-      setError(err.message || 'Something went wrong');
+      alert(err.message || 'Something went wrong while creating the provider.');
     }
   };
+
 
   return (
     <div className="w-[90%] mx-auto px-4 py-8">
       <div className="bg-bg-200 shadow-md rounded-lg p-6">
         <h2 className="text-2xl font-bold mb-6 text-text-200">Add New Provider</h2>
 
-        {success && (
-          <div className="mb-4 p-3 bg-green-100 text-green-700 border border-green-400 rounded">
-            Provider created successfully!
-          </div>
-        )}
-
-        {error && (
-          <div className="mb-4 p-3 bg-red-100 text-red-700 border border-red-400 rounded">
-            {error}
-          </div>
-        )}
-
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Column 1 */}
+            {/* Left Column */}
             <div className="space-y-4">
               <div>
                 <label htmlFor="legalName" className="block text-sm font-medium text-text-100">Legal Name</label>
@@ -82,7 +65,7 @@ const ProviderAdd = () => {
                   onChange={handleChange}
                   className="w-full mt-1 px-3 py-2 rounded-md shadow-sm bg-bg-100 text-text-200 focus:ring-primary-100 focus:border-primary-100"
                   required
-                  />
+                />
               </div>
 
               <div>
@@ -95,7 +78,7 @@ const ProviderAdd = () => {
                   onChange={handleChange}
                   className="w-full mt-1 px-3 py-2 rounded-md shadow-sm bg-bg-100 text-text-200 focus:ring-primary-100 focus:border-primary-100"
                   required
-                  />
+                />
               </div>
 
               <div>
@@ -108,7 +91,7 @@ const ProviderAdd = () => {
                   onChange={handleChange}
                   className="w-full mt-1 px-3 py-2 rounded-md shadow-sm bg-bg-100 text-text-200 focus:ring-primary-100 focus:border-primary-100"
                   required
-                  />
+                />
               </div>
 
               <div>
@@ -121,7 +104,7 @@ const ProviderAdd = () => {
                   onChange={handleChange}
                   className="w-full mt-1 px-3 py-2 rounded-md shadow-sm bg-bg-100 text-text-200 focus:ring-primary-100 focus:border-primary-100"
                   required
-                  />
+                />
               </div>
 
               <div>
@@ -134,11 +117,11 @@ const ProviderAdd = () => {
                   onChange={handleChange}
                   className="w-full mt-1 px-3 py-2 rounded-md shadow-sm bg-bg-100 text-text-200 focus:ring-primary-100 focus:border-primary-100"
                   required
-                  />
+                />
               </div>
             </div>
 
-            {/* Column 2 */}
+            {/* Right Column */}
             <div className="space-y-4">
               <div>
                 <label htmlFor="website" className="block text-sm font-medium text-text-100">Website</label>
@@ -149,7 +132,7 @@ const ProviderAdd = () => {
                   value={formData.website}
                   onChange={handleChange}
                   className="w-full mt-1 px-3 py-2 rounded-md shadow-sm bg-bg-100 text-text-200 focus:ring-primary-100 focus:border-primary-100"
-                  />
+                />
               </div>
 
               <div>
@@ -161,7 +144,7 @@ const ProviderAdd = () => {
                   value={formData.address}
                   onChange={handleChange}
                   className="w-full mt-1 px-3 py-2 rounded-md shadow-sm bg-bg-100 text-text-200 focus:ring-primary-100 focus:border-primary-100"
-                  />
+                />
               </div>
 
               <div>
@@ -173,7 +156,7 @@ const ProviderAdd = () => {
                   value={formData.country}
                   onChange={handleChange}
                   className="w-full mt-1 px-3 py-2 rounded-md shadow-sm bg-bg-100 text-text-200 focus:ring-primary-100 focus:border-primary-100"
-                  />
+                />
               </div>
 
               <div>
@@ -186,26 +169,26 @@ const ProviderAdd = () => {
                   onChange={handleChange}
                   className="w-full mt-1 px-3 py-2 rounded-md shadow-sm bg-bg-100 text-text-200 focus:ring-primary-100 focus:border-primary-100"
                   required
-                  />
+                />
               </div>
+            </div>
+          </div>
 
-            </div>
-            <div className="pt-2 flex">
-              <button
-                type="submit"
-                className="w-full py-2 px-4 bg-accent-100 text-bg-100 font-semibold rounded-md hover:bg-blue-700 transition"
-              >
-                Add Provider
-              </button>
-              <Link to={"/dashboard"} >
-              <button
-                type="submit"
-                className="w-full mx-6 py-2 px-4 bg-accent-200 text-bg-100 font-semibold rounded-md hover:bg-blue-700 transition"
-              >
-                Return
-              </button>
-              </Link>
-            </div>
+          {/* Buttons */}
+          <div className="flex flex-col md:flex-row gap-4 mt-8">
+            <button
+              type="submit"
+              className="w-full md:w-1/2 py-2 px-4 bg-accent-100 text-bg-100 font-semibold rounded-md hover:brightness-120 transition"
+            >
+              Add Provider
+            </button>
+            <Link
+              to="/dashboard"
+              className="w-full md:w-1/2 py-2 px-4 text-center bg-accent-200 text-bg-100 font-semibold rounded-md hover:brightness-120 transition flex items-center justify-center"
+            >
+              Return
+            </Link>
+
           </div>
         </form>
       </div>
