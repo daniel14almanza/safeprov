@@ -132,7 +132,7 @@ const ScreeningModal = ({ isOpen, onClose, provider }) => {
         <div className="flex justify-end mt-6">
           <button
             onClick={onClose}
-            className="bg-primary-200 text-bg-200 px-4 py-2 rounded-md"
+            className="bg-primary-200 text-bg-200 px-4 py-2 rounded-md cursor-pointer"
           >
             Close
           </button>

@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getProviderById, updateProvider } from '../services/http'; // Assumes you have updateProvider() defined
+import { getProviderById, updateProvider } from '../services/http';
 
 const ProviderEdit = () => {
   const { id } = useParams();
   const [formData, setFormData] = useState({
-    id: 0,
     legalName: '',
     tradeName: '',
     taxId: '',
@@ -17,6 +16,41 @@ const ProviderEdit = () => {
     annualBillingUSD: 0,
   });
 
+  const [errors, setErrors] = useState({});
+
+  // Validation
+  const validateField = (name, value) => {
+    switch(name) {
+      case 'legalName':
+      case 'tradeName':
+        if (!value) return 'This field is required';
+        if (value.length > 255) return 'Maximum 255 characters';
+        return '';
+      case 'taxId':
+        if (!value) return 'Tax ID is required';
+        if (!/^\d{11}$/.test(value)) return 'Tax ID must be exactly 11 digits';
+        return '';
+      case 'phoneNumber':
+        if (!value) return 'Phone number is required';
+        if (!/^\+?[0-9\s\-]{7,}$/.test(value)) return 'Invalid phone number';
+        return '';
+      case 'email':
+        if (!value) return 'Email is required';
+        if (!/^\S+@\S+\.\S+$/.test(value)) return 'Invalid email address';
+        return '';
+      case 'website':
+        if (!value) return '';
+        if (!/^https?:\/\/.+/.test(value)) return 'Invalid URL';
+        return '';
+      case 'annualBillingUSD':
+        if (value === '' || value === null) return 'Annual billing is required';
+        if (Number(value) < 0) return 'Must be a positive number';
+        return '';
+      default:
+        return '';
+    }
+  };
+
   useEffect(() => {
     async function fetchProvider() {
       try {
@@ -26,24 +60,65 @@ const ProviderEdit = () => {
         alert('Failed to fetch provider data.');
       }
     }
-
     fetchProvider();
   }, [id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
+    setFormData(prev => ({
       ...prev,
-      [name]: name === 'annualBillingUSD' ? Number(value) : value,
+      [name]: name === 'annualBillingUSD' ? Number(value) : value
+    }));
+    setErrors(prev => ({
+      ...prev,
+      [name]: validateField(name, value)
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const newErrors = {};
+    Object.keys(formData).forEach(key => {
+      const error = validateField(key, formData[key]);
+      if (error) newErrors[key] = error;
+    });
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      alert(`Validation error: ${Object.values(newErrors).join(', ')}`);
+      return;
+    }
+
     try {
-      await updateProvider({ ...formData, id: Number(id) }); // Ensure `id` is sent
+      const payload = {
+        legalName: formData.legalName,
+        tradeName: formData.tradeName,
+        taxId: formData.taxId,
+        phoneNumber: formData.phoneNumber,
+        email: formData.email,
+        website: formData.website.trim() === '' ? null : formData.website,
+        address: formData.address.trim() === '' ? null : formData.address,
+        country: formData.country.trim() === '' ? null : formData.country,
+        annualBillingUSD: formData.annualBillingUSD || 0
+      };
+
+      await updateProvider({ ...payload, id: Number(id) });
       alert('Provider updated successfully!');
+      setErrors({});
     } catch (err) {
+      if (err.response) {
+        const data = await err.response.json();
+        if (data.errors) {
+          const backendErrors = {};
+          for (const key in data.errors) {
+            backendErrors[key] = data.errors[key].join(', ');
+          }
+          setErrors(backendErrors);
+          alert(`Validation error: ${Object.values(backendErrors).join(', ')}`);
+          return;
+        }
+      }
       alert(err.message || 'Something went wrong while updating the provider.');
     }
   };
@@ -52,143 +127,50 @@ const ProviderEdit = () => {
     <div className="w-[90%] mx-auto px-4 py-8">
       <div className="bg-bg-200 shadow-md rounded-lg p-6">
         <h2 className="text-2xl font-bold mb-6 text-text-200">Edit Provider</h2>
-
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Left Column */}
             <div className="space-y-4">
-              <div>
-                <label htmlFor="legalName" className="block text-sm font-medium text-text-100">Legal Name</label>
-                <input
-                  type="text"
-                  id="legalName"
-                  name="legalName"
-                  value={formData.legalName}
-                  onChange={handleChange}
-                  className="w-full mt-1 px-3 py-2 rounded-md shadow-sm bg-bg-100 text-text-200 focus:ring-primary-100 focus:border-primary-100"
-                  required
-                />
-              </div>
-
-              <div>
-                <label htmlFor="tradeName" className="block text-sm font-medium text-text-100">Trade Name</label>
-                <input
-                  type="text"
-                  id="tradeName"
-                  name="tradeName"
-                  value={formData.tradeName}
-                  onChange={handleChange}
-                  className="w-full mt-1 px-3 py-2 rounded-md shadow-sm bg-bg-100 text-text-200 focus:ring-primary-100 focus:border-primary-100"
-                  required
-                />
-              </div>
-
-              <div>
-                <label htmlFor="taxId" className="block text-sm font-medium text-text-100">Tax ID</label>
-                <input
-                  type="text"
-                  id="taxId"
-                  name="taxId"
-                  value={formData.taxId}
-                  onChange={handleChange}
-                  className="w-full mt-1 px-3 py-2 rounded-md shadow-sm bg-bg-100 text-text-200 focus:ring-primary-100 focus:border-primary-100"
-                  required
-                />
-              </div>
-
-              <div>
-                <label htmlFor="phoneNumber" className="block text-sm font-medium text-text-100">Phone Number</label>
-                <input
-                  type="text"
-                  id="phoneNumber"
-                  name="phoneNumber"
-                  value={formData.phoneNumber}
-                  onChange={handleChange}
-                  className="w-full mt-1 px-3 py-2 rounded-md shadow-sm bg-bg-100 text-text-200 focus:ring-primary-100 focus:border-primary-100"
-                  required
-                />
-              </div>
-
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-text-100">Email</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  className="w-full mt-1 px-3 py-2 rounded-md shadow-sm bg-bg-100 text-text-200 focus:ring-primary-100 focus:border-primary-100"
-                  required
-                />
-              </div>
+              {['legalName','tradeName','taxId','phoneNumber','email'].map(field => (
+                <div key={field}>
+                  <label className="block text-sm font-medium text-text-100">{field}</label>
+                  <input
+                    type={field === 'email' ? 'email' : 'text'}
+                    name={field}
+                    value={formData[field]}
+                    onChange={handleChange}
+                    className="w-full mt-1 px-3 py-2 rounded-md shadow-sm bg-bg-100 text-text-200 focus:ring-primary-100 focus:border-primary-100"
+                  />
+                  {errors[field] && <p className="text-red-500 text-sm mt-1">{errors[field]}</p>}
+                </div>
+              ))}
             </div>
 
             {/* Right Column */}
             <div className="space-y-4">
-              <div>
-                <label htmlFor="website" className="block text-sm font-medium text-text-100">Website</label>
-                <input
-                  type="text"
-                  id="website"
-                  name="website"
-                  value={formData.website}
-                  onChange={handleChange}
-                  className="w-full mt-1 px-3 py-2 rounded-md shadow-sm bg-bg-100 text-text-200 focus:ring-primary-100 focus:border-primary-100"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="address" className="block text-sm font-medium text-text-100">Address</label>
-                <input
-                  type="text"
-                  id="address"
-                  name="address"
-                  value={formData.address}
-                  onChange={handleChange}
-                  className="w-full mt-1 px-3 py-2 rounded-md shadow-sm bg-bg-100 text-text-200 focus:ring-primary-100 focus:border-primary-100"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="country" className="block text-sm font-medium text-text-100">Country</label>
-                <input
-                  type="text"
-                  id="country"
-                  name="country"
-                  value={formData.country}
-                  onChange={handleChange}
-                  className="w-full mt-1 px-3 py-2 rounded-md shadow-sm bg-bg-100 text-text-200 focus:ring-primary-100 focus:border-primary-100"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="annualBillingUSD" className="block text-sm font-medium text-text-100">Annual Billing (USD)</label>
-                <input
-                  type="number"
-                  id="annualBillingUSD"
-                  name="annualBillingUSD"
-                  value={formData.annualBillingUSD}
-                  onChange={handleChange}
-                  className="w-full mt-1 px-3 py-2 rounded-md shadow-sm bg-bg-100 text-text-200 focus:ring-primary-100 focus:border-primary-100"
-                  required
-                />
-              </div>
+              {['website','address','country','annualBillingUSD'].map(field => (
+                <div key={field}>
+                  <label className="block text-sm font-medium text-text-100">{field}</label>
+                  <input
+                    type={field === 'annualBillingUSD' ? 'number' : (field === 'website' ? 'url' : 'text')}
+                    name={field}
+                    value={formData[field]}
+                    onChange={handleChange}
+                    min={field === 'annualBillingUSD' ? 0 : undefined}
+                    placeholder={field === 'website' ? 'https://example.com' : ''}
+                    className="w-full mt-1 px-3 py-2 rounded-md shadow-sm bg-bg-100 text-text-200 focus:ring-primary-100 focus:border-primary-100"
+                  />
+                  {errors[field] && <p className="text-red-500 text-sm mt-1">{errors[field]}</p>}
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* Buttons */}
           <div className="flex flex-col md:flex-row gap-4 mt-8">
-            <button
-              type="submit"
-              className="w-full md:w-1/2 py-2 px-4 bg-accent-100 text-bg-100 font-semibold rounded-md hover:brightness-120 transition"
-            >
+            <button type="submit" className="w-full md:w-1/2 py-2 px-4 bg-accent-100 text-bg-100 font-semibold rounded-md hover:brightness-120 transition">
               Update Provider
             </button>
-
-            <Link
-              to="/dashboard"
-              className="w-full md:w-1/2 py-2 px-4 text-center bg-accent-200 text-bg-100 font-semibold rounded-md hover:brightness-120 transition flex items-center justify-center"
-            >
+            <Link to="/dashboard" className="w-full md:w-1/2 py-2 px-4 text-center bg-accent-200 text-bg-100 font-semibold rounded-md hover:brightness-120 transition flex items-center justify-center">
               Return
             </Link>
           </div>
