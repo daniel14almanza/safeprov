@@ -1,88 +1,84 @@
-# My React App
 
-This is a React frontend project. It provides a user interface and connects to APIs or other backend services.
+# React Supplier SPA
 
----
-
-## Table of Contents
-
-- [Prerequisites](#prerequisites)
-- [Setup](#setup)
-- [Run the App](#run-the-app)
-- [Build for Production](#build-for-production)
-- [Project Structure](#project-structure)
-- [Contributing](#contributing)
-- [License](#license)
+Single Page Application (SPA) for managing suppliers and displaying screening results. Calls both backend APIs directly:
+- .NET Core Supplier API (CRUD)
+- FastAPI Screening API (screening)
 
 ---
+![crudpic](https://github.com/user-attachments/assets/2d755906-1303-41f7-8858-688bf586ca90)
 
 ## Prerequisites
 
-Before you start, make sure you have installed:
-
-- [Node.js](https://nodejs.org/) 18+ (includes `npm`)  
-- Optional: [Yarn](https://yarnpkg.com/)  
-- Optional: Code editor like [VS Code](https://code.visualstudio.com/)
+- Node.js 18+ (npm)
+- Optional: Yarn
+- Recommended: .env support for configuring backend endpoints
 
 ---
 
 ## Setup
 
-1. **Clone the repository**
+1. Clone the repository:
 
-```bash
-git clone https://github.com/username/react-app.git
-cd react-app
-Install dependencies
+    git clone https://github.com/username/react-suppliers.git
+    cd react-suppliers
 
-bash
-Copy code
-npm install
-# or with yarn
-# yarn install
-Run the App
-bash
-Copy code
-npm start
-# or with yarn
-# yarn start
-The app will run on: http://localhost:3000/
+2. Install dependencies:
 
-It will automatically reload if you make edits.
+    npm install
+    # or
+    # yarn install
 
-Build for Production
-bash
-Copy code
-npm run build
-# or with yarn
-# yarn build
-Creates a build/ folder with optimized production files.
+3. Configure backend URLs:
 
-You can deploy build/ to any static hosting service.
+    REACT_APP_SUPPLIER_API_URL=http://localhost:5000
+    REACT_APP_SCREENING_API_URL=http://127.0.0.1:8000
 
-Project Structure
-Typical React layout:
+---
 
-csharp
-Copy code
-/react-app
-├── public/             # Static files
-├── src/                # Application source code
-│   ├── components/     # React components
-│   ├── pages/          # Page-level components
-│   ├── services/       # API calls or utilities
-│   ├── App.js          # Main app entry
-│   └── index.js        # React DOM rendering
-├── node_modules/       # Dependencies (ignored by Git)
-├── package.json
-├── package-lock.json
-├── .gitignore
-└── README.md
-Contributing
-Fork the repository.
+## Run (development)
 
-Create a new branch for your feature or bugfix.
+    npm start
+    # or
+    # yarn start
 
-Commit changes with descriptive messages.
+- App runs at: http://localhost:3000
 
-Open a Pull Request.
+---
+
+## Features / Flow
+
+- CRUD UI for suppliers (create / view / edit / delete)
+- Supplier list table (ordered by last edit date)
+- Actions: View, Edit, Delete, Screen
+- Screening modal:
+  - Select 1–3 sources
+  - Queries FastAPI API
+  - Shows results in a table
+
+---
+
+## Build for production
+
+    npm run build
+    # or
+    # yarn build
+
+- Produces `build/` folder for deployment
+
+---
+
+## Project Structure
+
+/react-suppliers
+    public/
+    src/
+        components/
+        pages/
+        services/       # API calls to both backends
+        App.js
+        index.js
+    package.json
+    .env
+    README.md
+
