@@ -10,57 +10,76 @@ const Providers = () => {
     getProviders().then((data) => setProviders(data))
   }, []);
 
-
   return (
-    <>
-      <div className='w-[85%] p-6 m-1 '>
+    <div className="w-full h-full p-6">
+      
+      {/* Add Button */}
+      <Link to={'/dashboard/providers/add'}>
+        <button className="cursor-pointer bg-primary-100 text-bg-200 text-sm px-3 py-1 rounded-md mb-4">
+          Add New Provider
+        </button>
+      </Link>
 
-        <Link to={'/dashboard/providers/add'}>
-          <button className="cursor-pointer bg-primary-100 text-bg-200 text-sm px-3 py-1 rounded-md mb-4">Add New Provider</button>
-        </Link>
-
-        <table className="w-full table-auto border-collapse overflow-hidden rounded-xl shadow-md bg-bg-200 text-gray-100">
-          <thead className="bg-bg-300 text-left text-sm tracking-wider text-gray-300">
+      {/* Table wrapper with scroll */}
+      <div className="overflow-x-auto rounded-xl shadow-md">
+        <table className="min-w-full table-auto border-collapse bg-bg-200 text-gray-100 text-sm">
+          
+          {/* Table Header */}
+          <thead className="bg-bg-300 text-left text-xs uppercase tracking-wider text-gray-300">
             <tr>
-              <th className="px-4 py-3">Legal Name</th>
-              <th className="px-4 py-3">Trade Name</th>
-              <th className="px-4 py-3">Website</th>
-              <th className="px-4 py-3">Country</th>
-              <th className="px-4 py-3">Anual Billing $</th>
-              <th className="px-4 py-3">Last Edited</th>
-              <th className="px-4 py-3">Actions</th>
+              <th className="px-4 py-3 min-w-[180px]">Legal Name</th>
+              <th className="px-4 py-3 min-w-[150px]">Trade Name</th>
+              <th className="px-4 py-3 min-w-[200px]">Website</th>
+              <th className="px-4 py-3 w-[100px]">Country</th>
+              <th className="px-4 py-3 w-[140px]">Annual Billing $</th>
+              <th className="px-4 py-3 min-w-[180px]">Last Edited</th>
+              <th className="px-4 py-3 min-w-[260px]">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-bg-300">
+
+          {/* Table Body */}
+          <tbody className="divide-y divide-bg-300 text-sm">
             {providers.map(provider => (
               <tr key={provider.id} className="hover:bg-bg-300 transition-colors">
                 <td className="px-4 py-3">{provider.legalName}</td>
                 <td className="px-4 py-3">{provider.tradeName}</td>
                 <td className="px-4 py-3">
-                  <a href={provider.website} target='_blank'>
+                  <a href={provider.website} target="_blank" rel="noreferrer">
                     {provider.website}
                   </a>
                 </td>
                 <td className="px-4 py-3">{provider.country}</td>
                 <td className="px-4 py-3">$ {provider.annualBillingUSD}</td>
                 <td className="px-4 py-3">{provider.lastEdited}</td>
-                <td className="px-4 py-3 space-x-2">
-                  <Link to={`/dashboard/providers/${provider.id}`}>
-                    <button className="cursor-pointer bg-primary-300 text-text-100 text-sm px-3 py-1 rounded-md">Details</button>
-                  </Link>
-                  <Link to={`/dashboard/providers/${provider.id}/edit`}>
-                    <button className="cursor-pointer bg-primary-200 text-bg-200 text-sm px-3 py-1 rounded-md">Edit</button>
-                  </Link>
-                  <button className="cursor-pointer bg-primary-100 text-bg-200 text-sm px-3 py-1 rounded-md">Delete</button>
-                  <button className="cursor-pointer bg-accent-100 text-bg-200 text-sm px-3 py-1 rounded-md">Screenning</button>
+                
+                {/* Actions cell */}
+                <td className="px-4 py-3">
+                  <div className="flex flex-wrap gap-2">
+                    <Link to={`/dashboard/providers/${provider.id}`}>
+                      <button className="bg-primary-300 text-text-100 text-xs px-2 py-1 rounded-md">
+                        D
+                      </button>
+                    </Link>
+                    <Link to={`/dashboard/providers/${provider.id}/edit`}>
+                      <button className="bg-primary-200 text-bg-200 text-xs px-2 py-1 rounded-md">
+                        E
+                      </button>
+                    </Link>
+                    <button className="bg-primary-100 text-bg-200 text-xs px-2 py-1 rounded-md">
+                      DE
+                    </button>
+                    <button className="bg-accent-100 text-bg-200 text-xs px-2 py-1 rounded-md">
+                      Screening
+                    </button>
+                  </div>
                 </td>
               </tr>
-              ))}
+            ))}
           </tbody>
         </table>
-
       </div>
-    </>
+
+    </div>
   )
 }
 
