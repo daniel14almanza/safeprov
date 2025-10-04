@@ -16,7 +16,6 @@ const Sidebar = () => {
 
         {/* Nav */}
         <nav className="flex flex-col items-center space-y-4 flex-1 w-full">
-          <a href="#" className="w-full text-center">Dashboard</a>
           <Link to="/dashboard" className="w-full text-center">
             Providers
           </Link>

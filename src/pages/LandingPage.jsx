@@ -15,7 +15,7 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex-shrink-0">
-              <span className="text-2xl font-bold text-text-100">SafeProv</span>
+              <span className="text-2xl font-bold text-text-100">SafeProvApp</span>
             </div>
             <div className="flex items-center space-x-4">
               <a href="#" className="text-text-200 hover:text-text-100 transition duration-150">Home</a>
@@ -47,7 +47,7 @@ const LandingPage = () => {
                 Know Your Providers Protect Your <span className="text-accent-100">Business</span>
               </h1>
               <p className="text-xl text-gray-200 mb-8 max-w-full md:max-w-none ml-auto drop-shadow-md">
-                A powerful, modern, and reliable solution built on React, Tailwind, and React Router. Get started in seconds.
+                Providing peace of mind to stakeholders and regulators alike.
               </p>
             </div>
           </div>
@@ -64,7 +64,7 @@ const LandingPage = () => {
                   Gain Complete Visibility and <span className="text-accent-100">Mitigate Risk</span>
                 </h2>
                 <p className="text-lg text-text-200 mb-8">
-                  SafeProv provides a comprehensive and dynamic view of your entire supply chain, offering deep insights to proactively manage compliance and financial risk before it impacts your operations.
+                  Unforeseen associations with sanctioned or high-risk entities can lead to massive fines, reputational damage, and legal trouble. Our platform automates the critical process of cross-referencing vendors against major international watch lists, including OFAC and Offshore Leaks, ensuring your operations remain compliant and secure.
                 </p>
               </div>
 
@@ -88,9 +88,9 @@ const LandingPage = () => {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
 
-              {[{logo: ReactLogo, title: "Blazing Fast Performance", desc: "Leverage React's component model for a lightning-fast and seamless user experience."},
-                {logo: NETLogo, title: "Stunning Modern Design", desc: "Utilize the power of Tailwind CSS for beautiful, responsive, and utility-first styling."},
-                {logo: FastAPILogo, title: "Seamless Navigation", desc: "Built-in routing with React Router Dom ensures smooth and dynamic page transitions."}
+              {[{logo: ReactLogo, title: "SPA Performance", desc: "Provides a fluid, desktop-like user experience with near-instant transitions and data loading."},
+                {logo: NETLogo, title: "Backend Fundation", desc: "Provides a robust, scalable foundation for both the Provider CRUD operations and the high-risk screening API."},
+                {logo: FastAPILogo, title: "Web Scraping ", desc: "Performance for the Web Scraping workload, maximizing the speed of third-party site requests."}
               ].map((card, idx) => (
                 <div key={idx} className="bg-bg-200 rounded-xl shadow-lg overflow-hidden transition duration-300 hover:shadow-2xl">
                   <div className="h-48 w-full flex items-center justify-center p-4">

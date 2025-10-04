@@ -8,7 +8,6 @@ const ScreeningModal = ({ isOpen, onClose, provider }) => {
   const [page, setPage] = useState(1);
   const pageSize = 5; // how many rows per page
 
-  // 🔄 Fetch whenever modal opens or dropdown changes
   useEffect(() => {
     if (isOpen && provider?.legalName) {
       fetchScreening(provider.legalName, source);
@@ -45,7 +44,7 @@ const ScreeningModal = ({ isOpen, onClose, provider }) => {
     : 1;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="fixed inset-0 bg-opacity-20 backdrop-blur-sm flex items-center justify-center z-50">
       <div className="bg-bg-200 text-gray-100 rounded-lg shadow-lg w-[700px] max-h-[90vh] overflow-hidden flex flex-col p-6">
 
         {/* Provider Name + Hits */}
