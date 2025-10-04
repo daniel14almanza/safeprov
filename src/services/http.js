@@ -1,4 +1,5 @@
 const URL_BASE = "https://localhost:7168/api/Provider";
+const URL_SCREENING = "http://127.0.0.1:8000";
 
 // Default headers for fetch
 const defaultHeaders = {
@@ -19,6 +20,11 @@ class HttpError extends Error {
 function handleResponse(response) {
   if (!response.ok) {
     throw new HttpError(response);
+  }
+
+    // If the response has no content (204), return null or an object
+  if (response.status === 204) {
+    return null; // or: return { success: true }
   }
 
   return response.json();
@@ -88,5 +94,11 @@ export async function deleteProvider(id) {
   return handleResponse(response);
 }
 
-
+export async function screening(name, source) {
+  const response = await fetch(
+    `${URL_SCREENING}/screening?name=${encodeURIComponent(name)}&source=${source}`,
+    { headers: defaultHeaders }
+  );
+  return handleResponse(response);
+}
 

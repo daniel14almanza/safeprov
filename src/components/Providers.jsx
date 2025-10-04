@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import { deleteProvider, getProviders } from '../services/http'
 import { Link } from 'react-router-dom';
+import ScreeningModal from './ScreeningModal';
 
 const Providers = () => {
 
   const [providers, setProviders] = useState([]);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProvider, setSelectedProvider] = useState(null);
+
+
 
   useEffect(() => {
     getProviders().then((data) => setProviders(data))
@@ -17,27 +23,27 @@ const Providers = () => {
 
     // 2. Proceed only if the user confirms
     if (isConfirmed) {
-        // Optimistically remove from UI
-        const newProviders = providers.filter((provider) => provider.id !== id); // Use !== for strict comparison
-        setProviders(newProviders);
+      // Optimistically remove from UI
+      const newProviders = providers.filter((provider) => provider.id !== id); // Use !== for strict comparison
+      setProviders(newProviders);
 
-        try {
-            // Send the request to the server
-            await deleteProvider(id);
-            // Optional: Show a success message if needed
-        } catch (error) {
-            // 3. Handle failure: Rollback state and show error
-            console.error("Failed to delete provider on server:", error);
-            // Re-fetch or re-add the deleted item to the state to rollback the UI change
-            getProviders().then((data) => setProviders(data));
-            window.alert("Deletion failed on the server. Please try again.");
-        }
+      try {
+        // Send the request to the server
+        await deleteProvider(id);
+        // Optional: Show a success message if needed
+      } catch (error) {
+        // 3. Handle failure: Rollback state and show error
+        console.error("Failed to delete provider on server:", error);
+        // Re-fetch or re-add the deleted item to the state to rollback the UI change
+        getProviders().then((data) => setProviders(data));
+        window.alert("Deletion failed on the server. Please try again.");
+      }
     }
-};
+  };
 
   return (
     <div className="w-full h-full p-6">
-      
+
       {/* Add Button */}
       <Link to={'/dashboard/providers/add'}>
         <button className="cursor-pointer bg-primary-100 text-bg-200 text-sm px-3 py-1 rounded-md mb-4">
@@ -48,7 +54,7 @@ const Providers = () => {
       {/* Table wrapper with scroll */}
       <div className="overflow-x-auto rounded-xl shadow-md">
         <table className="min-w-full table-auto border-collapse bg-bg-200 text-gray-100 text-sm">
-          
+
           {/* Table Header */}
           <thead className="bg-bg-300 text-left text-xs uppercase tracking-wider text-gray-300">
             <tr>
@@ -76,7 +82,7 @@ const Providers = () => {
                 <td className="px-4 py-3">{provider.country}</td>
                 <td className="px-4 py-3">$ {provider.annualBillingUSD}</td>
                 <td className="px-4 py-3">{provider.lastEdited}</td>
-                
+
                 {/* Actions cell */}
                 <td className="px-4 py-3">
                   <div className="flex flex-wrap gap-2">
@@ -93,9 +99,16 @@ const Providers = () => {
                     <button onClick={() => handleDeleteProvider(provider.id)} className="bg-primary-100 text-bg-200 text-xs px-2 py-1 rounded-md cursor-pointer">
                       &#x1F5D1;
                     </button>
-                    <button className="bg-accent-100 text-bg-200 text-xs px-2 py-1 rounded-md cursor-pointer">
+                    <button
+                      onClick={() => {
+                        setSelectedProvider(provider); // pass provider info
+                        setIsModalOpen(true);
+                      }}
+                      className="bg-accent-100 text-bg-200 text-xs px-2 py-1 rounded-md cursor-pointer"
+                    >
                       &#x26A0;
                     </button>
+
                   </div>
                 </td>
               </tr>
@@ -104,7 +117,16 @@ const Providers = () => {
         </table>
       </div>
 
+
+      {isModalOpen && selectedProvider && (
+        <ScreeningModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          provider={selectedProvider}
+        />
+      )}
     </div>
+
   )
 }
 
