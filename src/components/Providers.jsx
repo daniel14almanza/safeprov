@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { getProviders } from '../services/http'
+import { deleteProvider, getProviders } from '../services/http'
 import { Link } from 'react-router-dom';
 
 const Providers = () => {
@@ -10,13 +10,38 @@ const Providers = () => {
     getProviders().then((data) => setProviders(data))
   }, []);
 
+
+  const handleDeleteProvider = async (id) => {
+    // 1. Implement the confirmation dialog
+    const isConfirmed = window.confirm("Are you sure you want to delete this provider? This action cannot be undone.");
+
+    // 2. Proceed only if the user confirms
+    if (isConfirmed) {
+        // Optimistically remove from UI
+        const newProviders = providers.filter((provider) => provider.id !== id); // Use !== for strict comparison
+        setProviders(newProviders);
+
+        try {
+            // Send the request to the server
+            await deleteProvider(id);
+            // Optional: Show a success message if needed
+        } catch (error) {
+            // 3. Handle failure: Rollback state and show error
+            console.error("Failed to delete provider on server:", error);
+            // Re-fetch or re-add the deleted item to the state to rollback the UI change
+            getProviders().then((data) => setProviders(data));
+            window.alert("Deletion failed on the server. Please try again.");
+        }
+    }
+};
+
   return (
     <div className="w-full h-full p-6">
       
       {/* Add Button */}
       <Link to={'/dashboard/providers/add'}>
         <button className="cursor-pointer bg-primary-100 text-bg-200 text-sm px-3 py-1 rounded-md mb-4">
-          Add New Provider
+          &#x2B; Add New Provider
         </button>
       </Link>
 
@@ -56,20 +81,20 @@ const Providers = () => {
                 <td className="px-4 py-3">
                   <div className="flex flex-wrap gap-2">
                     <Link to={`/dashboard/providers/${provider.id}`}>
-                      <button className="bg-primary-300 text-text-100 text-xs px-2 py-1 rounded-md">
-                        D
+                      <button className="bg-primary-300 text-text-100 text-xs px-2 py-1 rounded-md cursor-pointer">
+                        &#x1F50D;
                       </button>
                     </Link>
                     <Link to={`/dashboard/providers/${provider.id}/edit`}>
-                      <button className="bg-primary-200 text-bg-200 text-xs px-2 py-1 rounded-md">
-                        E
+                      <button className="bg-primary-200 text-bg-200 text-xs px-2 py-1 rounded-md cursor-pointer">
+                        &#x270F;
                       </button>
                     </Link>
-                    <button className="bg-primary-100 text-bg-200 text-xs px-2 py-1 rounded-md">
-                      DE
+                    <button onClick={() => handleDeleteProvider(provider.id)} className="bg-primary-100 text-bg-200 text-xs px-2 py-1 rounded-md cursor-pointer">
+                      &#x1F5D1;
                     </button>
-                    <button className="bg-accent-100 text-bg-200 text-xs px-2 py-1 rounded-md">
-                      Screening
+                    <button className="bg-accent-100 text-bg-200 text-xs px-2 py-1 rounded-md cursor-pointer">
+                      &#x26A0;
                     </button>
                   </div>
                 </td>

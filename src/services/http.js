@@ -79,8 +79,8 @@ export async function getProviderById(id) {
 
 
 
-export async function deleteProvider(provider) {
-  const response = await fetch(`${URL_BASE}/${provider.id}`,{
+export async function deleteProvider(id) {
+  const response = await fetch(`${URL_BASE}/${id}`,{
     method: "DELETE",
     headers: defaultHeaders,
   })
